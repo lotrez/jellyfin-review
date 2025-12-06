@@ -1,6 +1,8 @@
 import { fetch } from "bun";
 import type {
 	AuthenticateByNameResponse,
+	MostViewedShowQuery,
+	PublicUserResponse,
 	UsageRankQuery,
 } from "./jellyfin-model";
 import { createAuthString, getDefaultUserAgent } from "./jellyfin-utils";
@@ -26,7 +28,7 @@ export const login = async ({
 			Username: login,
 		}),
 	});
-	const data: AuthenticateByNameResponse = await res.json();
+	const data = (await res.json()) as AuthenticateByNameResponse;
 	if (res.status !== 200) console.log(data);
 	return { status: res.status, data };
 };
@@ -45,7 +47,7 @@ export const userUsageRank = async ({
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json; charset=utf-8",
-				Authorization: auth,
+				"X-MediaBrowser-Token": auth,
 			},
 			body: JSON.stringify({
 				CustomQueryString: `SELECT 
@@ -54,17 +56,25 @@ export const userUsageRank = async ({
     COUNT(*) as TotalPlays,
     ROUND(AVG(PlayDuration), 2) as AvgPlayDuration
 FROM PlaybackActivity
+WHERE DateCreated >= '2025-01-01'
 GROUP BY UserId
 ORDER BY TotalPlayDuration DESC`,
 			}),
 		},
 	)
-		.then((res) => res.json())
-		.then((res: UsageRankQuery) => {
+		.then((res) => {
+			return res.json() as Promise<UsageRankQuery>;
+		})
+		.then((res) => {
+			if (!res || !res.results) {
+				console.log("No results found in response, returning empty array");
+				return [];
+			}
 			const newRes = [];
-			for (const result in res.results) {
+
+			for (const result of res.results) {
 				newRes.push({
-					username: result[0],
+					userId: result[0],
 					totalDuration: result[1],
 					totalPlays: result[2],
 					averageDuration: result[3],
@@ -72,5 +82,68 @@ ORDER BY TotalPlayDuration DESC`,
 			}
 			return newRes;
 		});
+	return res;
+};
+
+export const getPublicUsers = async ({ url }: { url: string }) => {
+	const res = await fetch(`${url}/users/public`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json; charset=utf-8",
+		},
+	});
+
+	const data = (await res.json()) as PublicUserResponse[];
+
+	if (res.status !== 200) {
+		console.log("Failed to fetch public users:", data);
+	}
+
+	return { status: res.status, data };
+};
+
+export const getUserMostViewedShow = async ({
+	auth,
+	url,
+	userId,
+}: {
+	auth: string;
+	url: string;
+	userId: string;
+}) => {
+	const res = await fetch(
+		`${url}/user_usage_stats/submit_custom_query?stamp=${new Date().getMilliseconds()}`,
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+				"X-MediaBrowser-Token": auth,
+			},
+			body: JSON.stringify({
+				CustomQueryString: `SELECT substr(ItemName, 0, instr(ItemName, ' - ')) AS name, COUNT(1) AS play_count, SUM(PlayDuration) AS total_duration FROM PlaybackActivity WHERE ItemType = 'Episode' AND UserId = '${userId}' AND DateCreated >= '2025-01-01' GROUP BY name ORDER BY total_duration DESC LIMIT 10`,
+			}),
+		},
+	)
+		.then((res) => {
+			console.log("Most viewed show response status:", res.status);
+			return res.json() as Promise<MostViewedShowQuery>;
+		})
+		.then((res) => {
+			console.log("Most viewed show response:", JSON.stringify(res, null, 2));
+
+			if (!res || !res.results || res.results.length === 0) {
+				console.log("No most viewed show found");
+				return null;
+			}
+
+			const [showName, playCount, totalDuration] = res.results[0] ?? [];
+
+			return {
+				showName,
+				playCount,
+				totalDuration,
+			};
+		});
+
 	return res;
 };

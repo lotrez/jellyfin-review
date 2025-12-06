@@ -107,7 +107,7 @@ interface Policy {
 }
 
 interface Configuration {
-	AudioLanguagePreference: string;
+	AudioLanguagePreference?: string;
 	PlayDefaultAudioTrack: boolean;
 	SubtitleLanguagePreference: string;
 	DisplayMissingEpisodes: boolean;
@@ -125,8 +125,93 @@ interface Configuration {
 	CastReceiverId: string;
 }
 
+export interface MostViewedShowQuery {
+	colums: string[];
+	results: string[][];
+	message: string;
+}
+
 export interface UsageRankQuery {
 	colums: string[];
 	results: string[][];
 	message: string;
+}
+
+export interface PublicUserResponse {
+	Name: string;
+	ServerId: string;
+	Id: string;
+	PrimaryImageTag: string;
+	HasPassword: boolean;
+	HasConfiguredPassword: boolean;
+	HasConfiguredEasyPassword: boolean;
+	EnableAutoLogin: boolean;
+	LastLoginDate: string;
+	LastActivityDate: string;
+	Configuration: Configuration;
+	Policy: Policy;
+}
+
+interface Policy {
+	IsAdministrator: boolean;
+	IsHidden: boolean;
+	EnableCollectionManagement: boolean;
+	EnableSubtitleManagement: boolean;
+	EnableLyricManagement: boolean;
+	IsDisabled: boolean;
+	BlockedTags: any[];
+	AllowedTags: any[];
+	EnableUserPreferenceAccess: boolean;
+	AccessSchedules: any[];
+	BlockUnratedItems: any[];
+	EnableRemoteControlOfOtherUsers: boolean;
+	EnableSharedDeviceControl: boolean;
+	EnableRemoteAccess: boolean;
+	EnableLiveTvManagement: boolean;
+	EnableLiveTvAccess: boolean;
+	EnableMediaPlayback: boolean;
+	EnableAudioPlaybackTranscoding: boolean;
+	EnableVideoPlaybackTranscoding: boolean;
+	EnablePlaybackRemuxing: boolean;
+	ForceRemoteSourceTranscoding: boolean;
+	EnableContentDeletion: boolean;
+	EnableContentDeletionFromFolders: any[];
+	EnableContentDownloading: boolean;
+	EnableSyncTranscoding: boolean;
+	EnableMediaConversion: boolean;
+	EnabledDevices: any[];
+	EnableAllDevices: boolean;
+	EnabledChannels: any[];
+	EnableAllChannels: boolean;
+	EnabledFolders: any[];
+	EnableAllFolders: boolean;
+	InvalidLoginAttemptCount: number;
+	LoginAttemptsBeforeLockout: number;
+	MaxActiveSessions: number;
+	EnablePublicSharing: boolean;
+	BlockedMediaFolders: any[];
+	BlockedChannels: any[];
+	RemoteClientBitrateLimit: number;
+	AuthenticationProviderId: string;
+	PasswordResetProviderId: string;
+	SyncPlayAccess: string;
+}
+
+interface Configuration {
+	AudioLanguagePreference?: string;
+	PlayDefaultAudioTrack: boolean;
+	SubtitleLanguagePreference: string;
+	DisplayMissingEpisodes: boolean;
+	GroupedFolders: any[];
+	SubtitleMode: string;
+	DisplayCollectionsView: boolean;
+	EnableLocalPassword: boolean;
+	OrderedViews: string[];
+	LatestItemsExcludes: string[];
+	MyMediaExcludes: any[];
+	HidePlayedInLatest: boolean;
+	RememberAudioSelections: boolean;
+	RememberSubtitleSelections: boolean;
+	EnableNextEpisodeAutoPlay: boolean;
+	CastReceiverId: string;
 }
