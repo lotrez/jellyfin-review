@@ -1,4 +1,3 @@
-import { fetch } from "bun";
 import type {
 	AuthenticateByNameResponse,
 	MostViewedShowQuery,

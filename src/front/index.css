@@ -1,1 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
+
+@theme {
+	/* Background colors */
+	--color-bg: #101010;
+	--color-bg-secondary: #181818;
+	--color-input-bg: #202020;
+	--color-secondary-bg: #252525;
+	--color-secondary-bg-hover: #2f2f2f;
+	--color-secondary-bg-active: #3a3a3a;
+	
+	/* Text colors */
+	--color-text-primary: #ffffff;
+	--color-text-secondary: #aaaaaa;
+	--color-text-tertiary: #666666;
+	
+	/* Border colors */
+	--color-border: #2a2a2a;
+	
+	/* Primary brand color (Jellyfin purple) */
+	--color-primary: #aa5cc3;
+	--color-primary-hover: #9647a8;
+	--color-primary-active: #82398e;
+	
+	/* Error color */
+	--color-error: #ff6b6b;
+	
+	/* Font family */
+	--font-family-sans: 'Quicksand', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+	margin: 0;
+	font-family: 'Quicksand', ui-sans-serif, system-ui, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
