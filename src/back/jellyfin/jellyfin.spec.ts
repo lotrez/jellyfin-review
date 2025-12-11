@@ -193,12 +193,14 @@ describe("Jellyfin Client", () => {
 			});
 
 			// Verify the response
-			if (mostViewedShow) {
-				expect(mostViewedShow.showName).toBeDefined();
-				expect(mostViewedShow.playCount).toBeDefined();
-				expect(mostViewedShow.totalDuration).toBeDefined();
+			if (mostViewedShow && mostViewedShow.length > 0) {
+				expect(mostViewedShow[0]?.showName).toBeDefined();
+				expect(mostViewedShow[0]?.playCount).toBeDefined();
+				expect(mostViewedShow[0]?.totalDuration).toBeDefined();
+				expect(mostViewedShow[0]?.seriesId).toBeDefined();
+				expect(mostViewedShow[0]?.imageUrl).toBeDefined();
 
-				console.log("Most viewed show:", mostViewedShow);
+				console.log("Most viewed shows:", mostViewedShow);
 			} else {
 				console.log("User has no viewing history");
 			}

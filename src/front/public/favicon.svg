@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#aa5cc3;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#c084fc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#grad)"/>
+
+  <!-- Play button triangle -->
+  <path d="M 40 30 L 40 70 L 70 50 Z" fill="white" opacity="0.95"/>
+
+  <!-- Sparkle/star accents -->
+  <circle cx="25" cy="25" r="3" fill="white" opacity="0.8"/>
+  <circle cx="75" cy="25" r="2.5" fill="white" opacity="0.7"/>
+  <circle cx="75" cy="75" r="3" fill="white" opacity="0.8"/>
+</svg>

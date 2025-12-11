@@ -73,10 +73,10 @@ ORDER BY TotalPlayDuration DESC`,
 
 			for (const result of res.results) {
 				newRes.push({
-					userId: result[0],
-					totalDuration: result[1],
-					totalPlays: result[2],
-					averageDuration: result[3],
+					userId: result[0]!,
+					totalDuration: Number(result[1]) / 60, // Convert seconds to minutes
+					totalPlays: Number(result[2]),
+					averageDuration: Number(result[3]) / 60, // Convert seconds to minutes
 				});
 			}
 			return newRes;
@@ -119,7 +119,16 @@ export const getUserMostViewedShow = async ({
 				"X-MediaBrowser-Token": auth,
 			},
 			body: JSON.stringify({
-				CustomQueryString: `SELECT substr(ItemName, 0, instr(ItemName, ' - ')) AS name, COUNT(1) AS play_count, SUM(PlayDuration) AS total_duration FROM PlaybackActivity WHERE ItemType = 'Episode' AND UserId = '${userId}' AND DateCreated >= '2025-01-01' GROUP BY name ORDER BY total_duration DESC LIMIT 10`,
+				CustomQueryString: `SELECT
+					substr(ItemName, 0, instr(ItemName, ' - ')) AS name,
+					COUNT(1) AS play_count,
+					SUM(PlayDuration) AS total_duration,
+					MAX(ItemId) AS item_id
+				FROM PlaybackActivity
+				WHERE ItemType = 'Episode' AND UserId = '${userId}' AND DateCreated >= '2025-01-01'
+				GROUP BY substr(ItemName, 0, instr(ItemName, ' - '))
+				ORDER BY total_duration DESC
+				LIMIT 5`,
 			}),
 		},
 	)
@@ -127,21 +136,52 @@ export const getUserMostViewedShow = async ({
 			console.log("Most viewed show response status:", res.status);
 			return res.json() as Promise<MostViewedShowQuery>;
 		})
-		.then((res) => {
-			console.log("Most viewed show response:", JSON.stringify(res, null, 2));
+		.then(async (res) => {
+			console.log("Most viewed shows response:", JSON.stringify(res, null, 2));
 
 			if (!res || !res.results || res.results.length === 0) {
-				console.log("No most viewed show found");
-				return null;
+				console.log("No most viewed shows found");
+				return [];
 			}
 
-			const [showName, playCount, totalDuration] = res.results[0] ?? [];
+			// Fetch series IDs for each show
+			const showsWithImages = await Promise.all(
+				res.results.map(async (result) => {
+					const [showName, playCount, totalDuration, episodeItemId] = result;
 
-			return {
-				showName,
-				playCount,
-				totalDuration,
-			};
+					// Fetch episode details to get SeriesId
+					try {
+						const itemRes = await fetch(`${url}/Users/${userId}/Items/${episodeItemId}`, {
+							headers: {
+								"X-MediaBrowser-Token": auth,
+							},
+						});
+
+						const itemData = await itemRes.json() as { SeriesId?: string };
+						const seriesId = itemData.SeriesId || episodeItemId!;
+
+						return {
+							showName: showName!,
+							playCount: Number(playCount),
+							totalDuration: Number(totalDuration) / 60, // Convert seconds to minutes
+							seriesId: seriesId,
+							imageUrl: `${url}/Items/${seriesId}/Images/Primary?maxHeight=400&quality=90`,
+						};
+					} catch (error) {
+						console.error(`Failed to fetch series ID for ${showName}:`, error);
+						// Fallback to episode ID if series fetch fails
+						return {
+							showName: showName!,
+							playCount: Number(playCount),
+							totalDuration: Number(totalDuration) / 60, // Convert seconds to minutes
+							seriesId: episodeItemId!,
+							imageUrl: `${url}/Items/${episodeItemId}/Images/Primary?maxHeight=400&quality=90`,
+						};
+					}
+				})
+			);
+
+			return showsWithImages;
 		});
 
 	return res;

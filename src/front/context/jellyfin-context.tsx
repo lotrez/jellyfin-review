@@ -19,17 +19,19 @@ interface MostViewedShowData {
 	showName: string;
 	playCount: number;
 	totalDuration: number;
+	seriesId: string;
+	imageUrl: string;
 }
 
 interface JellyfinStats {
 	usageRank: UsageRankData[] | undefined;
 	publicUsers: { status: number; data: PublicUserResponse[] } | undefined;
-	mostViewedShow: MostViewedShowData | null | undefined;
+	topShows: MostViewedShowData[] | undefined;
 	isLoading: boolean;
 	errors: {
 		usageRank: Error | null;
 		publicUsers: Error | null;
-		mostViewedShow: Error | null;
+		topShows: Error | null;
 	};
 }
 
@@ -284,12 +286,12 @@ function useJellyfinStats(
 	return {
 		usageRank: usageRankQuery.data,
 		publicUsers: publicUsersQuery.data,
-		mostViewedShow: mostViewedShowQuery.data,
+		topShows: mostViewedShowQuery.data,
 		isLoading: usageRankQuery.isLoading || publicUsersQuery.isLoading || mostViewedShowQuery.isLoading,
 		errors: {
 			usageRank: usageRankQuery.error,
 			publicUsers: publicUsersQuery.error,
-			mostViewedShow: mostViewedShowQuery.error,
+			topShows: mostViewedShowQuery.error,
 		},
 	};
 }

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  jellyfin-wrapped:
+    build: .
+    container_name: jellyfin-wrapped
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+    labels:
+      - "com.jellyfin.wrapped.description=Jellyfin Wrapped 2025 - Year in Review"
