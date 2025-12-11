@@ -8,9 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "wrangler pages deploy dist",
+    "deploy": "wrangler pages deploy src/front/dist",
     "cf:login": "wrangler login",
-    "cf:dev": "wrangler pages dev dist"
+    "cf:dev": "wrangler pages dev src/front/dist"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
