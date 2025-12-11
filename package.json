@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "wrangler pages deploy dist",
+    "cf:login": "wrangler login",
+    "cf:dev": "wrangler pages dev dist"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
@@ -21,8 +24,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
-    "@types/bun": "latest",
     "@eslint/js": "^9.39.1",
+    "@types/bun": "latest",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
@@ -34,7 +37,8 @@
     "globals": "^16.5.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "npm:rolldown-vite@7.2.5"
+    "vite": "npm:rolldown-vite@7.2.5",
+    "wrangler": "^4.54.0"
   },
   "peerDependencies": {
     "typescript": "^5"
