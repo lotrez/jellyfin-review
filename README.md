@@ -11,7 +11,6 @@ A year-in-review experience for Jellyfin, inspired by Spotify Wrapped. See your 
 - ❤️ **Loyalty Badge**: Awarded for dedication to your favorite shows
 - 📱 **Story Interface**: Instagram-style stories with swipe navigation
 - 📸 **Shareable Cards**: Export your stats as images
-- 🐳 **Docker Support**: Easy deployment with Docker
 
 ## Prerequisites
 
@@ -54,21 +53,6 @@ bun run lint
 
 ## Deployment
 
-### Docker (Recommended)
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed Docker deployment instructions.
-
-**Quick start:**
-
-```bash
-# Using docker-compose
-docker-compose up -d
-
-# Manual build and run
-docker build -t jellyfin-wrapped .
-docker run -d -p 3000:80 --name jellyfin-wrapped jellyfin-wrapped
-```
-
 ### Cloudflare Pages
 
 ```bash
@@ -94,7 +78,7 @@ bun run deploy
 - **Data Fetching**: TanStack Query (React Query)
 - **Build Tool**: Vite with Rolldown
 - **Runtime**: Bun
-- **Deployment**: Docker + Nginx, Cloudflare Pages
+- **Deployment**: Cloudflare Pages
 
 ## License
 
